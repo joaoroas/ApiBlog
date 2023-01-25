@@ -1,4 +1,5 @@
 ﻿using Blog.Data;
+using Blog.Extensions;
 using Blog.Models;
 using Blog.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -13,20 +14,35 @@ namespace Blog.Controllers
         public async Task<IActionResult> GetAsync(
             [FromServices] BlogDataContext context)
         {
-            var categories = await context.Categories.ToListAsync();
+            try
+            {
+                var categories = await context.Categories.ToListAsync();
 
-            return Ok(categories);
+                return Ok(new ResultViewModel<List<Category>>(categories));
+            }
+            catch
+            {
+                return StatusCode(500, new ResultViewModel<List<Category>>("Falha interna no servidor"));
+            }
         }
 
         [HttpGet("v1/categories/{id:int}")]
         public async Task<IActionResult> GetByIdAsync(
            [FromServices] BlogDataContext context, int id)
         {
-            var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-            if (category == null)
-                return NotFound();
+            try
+            {
+                var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+                if (category == null)
+                    return NotFound(new ResultViewModel<Category>("Essa categoria não existe"));
 
-            return Ok(category);
+                return Ok(new ResultViewModel<Category>(category));
+
+            }
+            catch
+            {
+                return StatusCode(500, new ResultViewModel<Category>("Falha interna no servidor"));
+            }
         }
 
         [HttpPost("v1/categories")]
@@ -34,8 +50,8 @@ namespace Blog.Controllers
             [FromBody] EditorCategoryViewModel model,
             [FromServices] BlogDataContext context)
         {
-            if (!ModelState.IsValid) 
-                return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(new ResultViewModel<Category>(ModelState.GetErrors()));
 
             try
             {
@@ -43,7 +59,7 @@ namespace Blog.Controllers
                 await context.Categories.AddAsync(category);
                 await context.SaveChangesAsync();
 
-                return Created($"v1/categories/{category.Id}", category);
+                return Created($"v1/categories/{category.Id}", new ResultViewModel<Category>(category));
 
             }
             catch (Exception ex)
