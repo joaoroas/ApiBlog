@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Blog.Attributes;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Controllers
 {
@@ -9,6 +10,7 @@ namespace Blog.Controllers
         [HttpGet("")]
         public IActionResult Get()
         {
+
             return Ok(new { Message = "Api está online." });
         }
     }
