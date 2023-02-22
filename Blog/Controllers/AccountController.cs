@@ -18,7 +18,7 @@ namespace Blog.Controllers
             => _tokenService = tokenService;
 
         [HttpPost("v1/accounts")]
-        public async Task<IActionResult> Post(RegisterViewModel model, BlogDataContext context)
+        public async Task<IActionResult> Post(RegisterViewModel model, BlogDataContext context, EmailService emailService)
         {
             if (!ModelState.IsValid)
             {
@@ -38,6 +38,12 @@ namespace Blog.Controllers
             {
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
+
+                emailService.Send(
+                    user.Name,
+                    user.Email,
+                    "Bem vindo ao blog...",
+                    $"Sua senha é {password}");
 
                 return Ok(new ResultViewModel<dynamic>(new
                 {
