@@ -3,10 +3,12 @@ using Blog.Extensions;
 using Blog.Models;
 using Blog.Services;
 using Blog.ViewModels;
+using Blog.ViewModels.Accounts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;
+using System.Text.RegularExpressions;
 
 namespace Blog.Controllers
 {
@@ -93,6 +95,13 @@ namespace Blog.Controllers
             }
 
         }
+
+        //[HttpPost("v1/accounts/upload-image")]
+        //public async Task<IActionResult> UploadImage(UploadImageViewModel model, BlogDataContext context)
+        //{
+        //    var fileName = $"{Guid.NewGuid().ToString()}.jpg";
+        //    var data = new Regex(@"^data:image\/[a-z]+;base64,");
+        //}
 
 
     }
