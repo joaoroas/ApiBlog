@@ -18,11 +18,13 @@ namespace Blog.Controllers
         {
             try
             {
-                var categories = cache.GetOrCreate("CategoriesCache", x =>
-                {
-                    x.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
-                    return await context.Categories.ToListAsync();
-                }); //await context.Categories.ToListAsync();
+                var categories = await context.Categories.ToListAsync();
+
+                //    cache.GetOrCreate("CategoriesCache", x =>
+                //{
+                //    x.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                //    return await context.Categories.ToListAsync();
+                //}); 
 
                 return Ok(new ResultViewModel<List<Category>>(categories));
             }
